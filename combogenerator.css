@@ -1,0 +1,91 @@
+#userInput{
+    caret-color: transparent;
+    margin: 10 0 0 0;
+    height: 30;
+}
+
+.inputContainer{
+    background-color: plum;
+    height: 50;
+    text-align: center;
+    width: 100%;
+}
+
+
+.loopcontainer{
+    background-color: gray;
+    padding: 10 0 10 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60;
+    overflow: hidden;
+}
+.container {
+    float: left;
+
+}
+
+.charactercontainer{
+    padding: 5 0 0 10;
+    background-color: lightgray;
+    border-radius: 10px;
+    height: 50;
+    width: 50;
+    border-style: solid;
+    margin: 10 10 10 10;
+}
+
+.bigcharactercontainer{
+    padding: 5 0 0 10;
+    background-color: lightgray;
+    border-radius: 10px;
+    height: auto;
+    width: auto;
+    border-style: solid;
+    margin: 10 10 10 10;
+    overflow: hidden;
+}
+.active{
+    background-color: aqua;
+}
+
+.character{
+    font-size: 22;
+}
+
+.incorrect{
+    background-color: pink;
+}
+
+#lastKeyPressed{
+    font-size: 50;
+}
+
+.currentEventDisplay{
+    height: 500;
+    margin: 20 0 0 0;
+    background-color: gray;
+}
+.gameState{
+    height: 90%;
+    width: 30%;
+    float: left;
+    background-color:rgb(88, 88, 153);
+}
+
+.lastKeyPressed{
+    height: 90%;
+    width: 30%;
+    float: left;
+    background-color: rgb(11, 139, 109);
+    text-align: center;
+}
+
+.lastKeyPressedIncorrect{
+    background-color: rgb(224, 63, 10);
+}
+
+.lastKeyPressedCorrect{
+    background-color: rgb(4, 171, 51);
+}

@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="combogenerator.css">
+    </head>
+    <body>
+
+
+        <div class="inputContainer">
+            <input type="text" onkeyup="keyUpFunction()" id="userInput" placeholder="click here to input!">
+        </div>
+
+        <div class="currentEventDisplay">
+            <div class="gameState">
+                <p id="timeTaken">Input first key to begin...</p>
+                <div class="customizerContainer">
+                    <form class="customizer">
+                        <label>Custom Keys: </label>
+                        <input type="text">
+                        <input type="submit" onclick="customValueSubmitted()">
+                    </form>
+                </div>
+            </div>
+            <div class="lastKeyPressed">
+                <div class="bigcharactercontainer">
+                    <p id="lastKeyPressed"></p>
+                </div>
+                <p id="tauntText"></p>
+            </div>
+        </div>
+
+        <div class="loopcontainer" id="loopcontainer">
+        </div>
+
+    </body>
+  
+    <script src="combogenerator.js"></script>
+</html>
