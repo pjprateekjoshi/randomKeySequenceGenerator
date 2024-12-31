@@ -9,6 +9,9 @@
     height: 50;
     text-align: center;
     width: 100%;
+    font-size: larger;
+    font-weight: bolder;
+    padding-top: 10;
 }
 
 

@@ -7,46 +7,60 @@ let keybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g'
 let altkeybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
 let randomComboLength = 50
 let randomComboArray = []
+let isAltKeyPressedByUser = false
 
 gameSetup()
 
+
+document.addEventListener("keyup", keyUpFunction)
+document.addEventListener("keydown", keyDownFunction)
+
+function keyDownFunction(e){
+    isAltKeyPressedByUser = e.altKey
+    console.log(isAltKeyPressedByUser)
+}
+
 //game function -- key listener
-function keyUpFunction(){
+function keyUpFunction(e){
+    if (e.key == "Alt") isAltKeyPressedByUser = false
 
-    let userInput = document.getElementById("userInput").value
+    if(!isAltKeyPressedByUser){
+        let userInput = e.key
 
-    document.getElementById("lastKeyPressed").innerHTML = userInput.toUpperCase();
+        document.getElementById("lastKeyPressed").innerHTML = userInput.toUpperCase();
 
-    if(userInput == randomComboArray[currentIndex]){
-        if(currentIndex == 0) {
-            startTime = Date.now()
-            gameBeginMethod()
-            mistakeCounter = 0
-        }
+        if(userInput == randomComboArray[currentIndex]){
+            if(currentIndex == 0) {
+                startTime = Date.now()
+                gameBeginMethod()
+                mistakeCounter = 0
+            }
 
-        document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedIncorrect")
-        document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedCorrect")
-        document.getElementById("tauntText").innerHTML = "!!"
+            document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedIncorrect")
+            document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedCorrect")
+            document.getElementById("tauntText").innerHTML = "!!"
 
-        removeElementFromUI(currentIndex)
+            removeElementFromUI(currentIndex)
 
-        currentIndex ++
+            currentIndex ++
 
-        if (currentIndex < randomComboArray.length){
-            document.getElementById(currentIndex.toString()).children[0].classList.add("active")
+            if (currentIndex < randomComboArray.length){
+                document.getElementById(currentIndex.toString()).children[0].classList.add("active")
+            }else{
+                endTime = Date.now()
+                gameOverMethod()
+            }
         }else{
-            endTime = Date.now()
-            gameOverMethod()
+            document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedCorrect")
+            document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedIncorrect")
+            document.getElementById("tauntText").innerHTML = "??"
+            document.getElementById(currentIndex.toString()).children[0].classList.add("incorrect")
+            mistakeCounter ++;
         }
-    }else{
-        document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedCorrect")
-        document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedIncorrect")
-        document.getElementById("tauntText").innerHTML = "??"
-        document.getElementById(currentIndex.toString()).children[0].classList.add("incorrect")
-        mistakeCounter ++;
-    }
 
-    document.getElementById("userInput").value=""
+        document.getElementById("userInput").value=""
+    }
+    
 
 }
 
