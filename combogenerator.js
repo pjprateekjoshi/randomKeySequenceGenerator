@@ -2,7 +2,7 @@ let keybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g'
 let altkeybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
 let randomComboLength = 50
 
-if(document.URL.toString().split("?").length > 1){
+if(document.URL.toString().split("?").length > 1 && document.URL.toString().split("?")[1].length > 0){
     let userSubmittedKeybind = document.URL.toString().split("=")[1].split("&")[0].replaceAll("+", " ")
     let userSubmittedComboLength = document.URL.toString().split("=")[2]
 
@@ -27,19 +27,14 @@ function randomComboArrayGenerator(comboLength, keybinds){
 
     for(i=0; i<comboLength; i++){
         let randomNum = Math.ceil((Math.random() * 1000))
-
         let randomKeybindPosition = randomNum % (keybinds.length)
-        
-        let nextAddElement = keybinds[randomKeybindPosition];
-
+        let nextAddElement = keybinds[randomKeybindPosition]
         comboArray.push(nextAddElement)
     }
-    
     return (comboArray)
 }
 
 let randomComboArray = randomComboArrayGenerator(randomComboLength, keybinds)
-
 
 let i = 0;
 
@@ -81,6 +76,7 @@ function keyUpFunction(){
         if(currentIndex == 0) {
             startTime = Date.now()
             gameBeginMethod()
+            mistakeCounter = 0
         }
 
         document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedIncorrect")
