@@ -1,7 +1,7 @@
 //global variables
 let currentIndex = 0
-let startTime = Date.now()
-let endTime = Date.now()
+let startTime = null
+let endTime = null
 let mistakeCounter = 0
 let keybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
 let altkeybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
@@ -17,51 +17,60 @@ document.addEventListener("keydown", keyDownFunction)
 
 function keyDownFunction(e){
     isAltKeyPressedByUser = e.altKey
-    console.log(isAltKeyPressedByUser)
+    let userInput = e.key
+
+    userInput != "Alt" ? document.getElementById("lastKeyPressed").innerHTML = userInput.toUpperCase() : null
+
+    if(isAltKeyPressedByUser){
+        showAltMiniTextOnCurrentKey()
+    }else{
+        hideAltMiniTextOnCurrentKey()
+        if(userInput == randomComboArray[currentIndex]){
+            userPressedCorrectKeyUpdate()
+        }else{
+            userPressedIncorrectKeyUpdate()
+        }
+    }
+}
+function keyUpFunction(e){
+    if(e.key == "Alt") isAltKeyPressedByUser = false
+    if(isAltKeyPressedByUser){
+        showAltMiniTextOnCurrentKey()
+    }else{
+        hideAltMiniTextOnCurrentKey()
+    }
 }
 
-//game function -- key listener
-function keyUpFunction(e){
-    if (e.key == "Alt") isAltKeyPressedByUser = false
 
-    if(!isAltKeyPressedByUser){
-        let userInput = e.key
-
-        document.getElementById("lastKeyPressed").innerHTML = userInput.toUpperCase();
-
-        if(userInput == randomComboArray[currentIndex]){
-            if(currentIndex == 0) {
-                startTime = Date.now()
-                gameBeginMethod()
-                mistakeCounter = 0
-            }
-
-            document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedIncorrect")
-            document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedCorrect")
-            document.getElementById("tauntText").innerHTML = "!!"
-
-            removeElementFromUI(currentIndex)
-
-            currentIndex ++
-
-            if (currentIndex < randomComboArray.length){
-                document.getElementById(currentIndex.toString()).children[0].classList.add("active")
-            }else{
-                endTime = Date.now()
-                gameOverMethod()
-            }
-        }else{
-            document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedCorrect")
-            document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedIncorrect")
-            document.getElementById("tauntText").innerHTML = "??"
-            document.getElementById(currentIndex.toString()).children[0].classList.add("incorrect")
-            mistakeCounter ++;
-        }
-
-        document.getElementById("userInput").value=""
+function userPressedCorrectKeyUpdate(){
+    if(currentIndex == 0) {
+        startTime = Date.now()
+        gameBeginMethod()
+        mistakeCounter = 0
     }
-    
 
+    document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedIncorrect")
+    document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedCorrect")
+    document.getElementById("tauntText").innerHTML = "!!"
+
+    removeElementFromUI(currentIndex)
+
+    currentIndex ++
+
+    if (currentIndex < randomComboArray.length){
+        document.getElementById(currentIndex.toString()).children[0].classList.add("active")
+    }else{
+        endTime = Date.now()
+        gameOverMethod()
+    }
+}
+
+function userPressedIncorrectKeyUpdate(){
+    document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedCorrect")
+    document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedIncorrect")
+    document.getElementById("tauntText").innerHTML = "??"
+    document.getElementById(currentIndex.toString()).children[0].classList.add("incorrect")
+    mistakeCounter ++;
 }
 
 
@@ -175,4 +184,11 @@ function updateScoreDisplay(){
 function clearScores(){
     localStorage.setItem("scoreArray", "[]")
     updateScoreDisplay()
+}
+
+function showAltMiniTextOnCurrentKey(){
+    document.getElementById("altDisplayer").innerHTML = "Alt"
+}
+function hideAltMiniTextOnCurrentKey(){
+    document.getElementById("altDisplayer").innerHTML = ""
 }

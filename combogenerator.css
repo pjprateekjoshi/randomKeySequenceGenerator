@@ -43,13 +43,13 @@
     padding: 5 0 0 10;
     background-color: lightgray;
     border-radius: 10px;
-    height: 60;
-    width: 60;
+    height: 75;
+    width: 75;
     border-style: solid;
     margin: 10 10 10 10;
     overflow: hidden;
     position: relative;
-    left: 35%;
+    left: 34%;
 }
 
 .active{
