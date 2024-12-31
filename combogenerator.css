@@ -58,6 +58,13 @@
 
 .character{
     font-size: 22;
+    margin: 0 0 0 0;
+    top: 28%;
+    position: relative;
+}
+
+.supersmalltext{
+    font-size: 10px;
 }
 
 .incorrect{

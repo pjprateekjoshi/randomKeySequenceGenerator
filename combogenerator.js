@@ -4,7 +4,7 @@ let startTime = null
 let endTime = null
 let mistakeCounter = 0
 let keybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
-let altkeybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
+let altkeybinds = []
 let randomComboLength = 50
 let randomComboArray = []
 let isAltKeyPressedByUser = false
@@ -16,22 +16,37 @@ document.addEventListener("keyup", keyUpFunction)
 document.addEventListener("keydown", keyDownFunction)
 
 function keyDownFunction(e){
-    isAltKeyPressedByUser = e.altKey
     let userInput = e.key
-
-    userInput != "Alt" ? document.getElementById("lastKeyPressed").innerHTML = userInput.toUpperCase() : null
-
-    if(isAltKeyPressedByUser){
+    if(userInput == "Alt"){
+        isAltKeyPressedByUser = true
         showAltMiniTextOnCurrentKey()
     }else{
-        hideAltMiniTextOnCurrentKey()
-        if(userInput == randomComboArray[currentIndex]){
-            userPressedCorrectKeyUpdate()
+        document.getElementById("lastKeyPressed").innerHTML = userInput.toUpperCase()
+        if(isAltKeyPressedByUser){
+            if(randomComboArray[currentIndex].combineWith == "Alt"){
+                if(userInput == randomComboArray[currentIndex].value){
+                    userPressedCorrectKeyUpdate()
+                }else{
+                    userPressedIncorrectKeyUpdate()
+                }
+            }else{
+                userPressedIncorrectKeyUpdate()
+            }
         }else{
-            userPressedIncorrectKeyUpdate()
+
+            if(randomComboArray[currentIndex].combineWith == "Alt"){
+                    userPressedIncorrectKeyUpdate()
+            }else{
+                if(userInput == randomComboArray[currentIndex].value){
+                    userPressedCorrectKeyUpdate()
+                }else{
+                    userPressedIncorrectKeyUpdate()
+                }
+            }
         }
     }
 }
+
 function keyUpFunction(e){
     if(e.key == "Alt") isAltKeyPressedByUser = false
     if(isAltKeyPressedByUser){
@@ -40,7 +55,6 @@ function keyUpFunction(e){
         hideAltMiniTextOnCurrentKey()
     }
 }
-
 
 function userPressedCorrectKeyUpdate(){
     if(currentIndex == 0) {
@@ -78,12 +92,15 @@ function userPressedIncorrectKeyUpdate(){
 function gameSetup(){
     if(document.URL.toString().split("?").length > 1 && document.URL.toString().split("?")[1].length > 0){
         let userSubmittedKeybind = document.URL.toString().split("=")[1].split("&")[0].replaceAll("+", " ")
-        let userSubmittedComboLength = document.URL.toString().split("=")[2]
+        let userSubmittedAltKeybind = document.URL.toString().split("=")[2].split("&")[0].replaceAll("+", " ")
+        let userSubmittedComboLength = document.URL.toString().split("=")[3]
 
         document.getElementById("customKeys").value = userSubmittedKeybind
+        document.getElementById("altCustomKeys").value = userSubmittedAltKeybind
         document.getElementById("noOfKeystrokes").value = userSubmittedComboLength
 
         keybinds = userSubmittedKeybind.length > 0 ? userSubmittedKeybind.split('') : keybinds
+        altkeybinds = userSubmittedAltKeybind.length > 0 ? userSubmittedAltKeybind.split('') : altkeybinds
         randomComboLength = Number(userSubmittedComboLength) > 0 ? Number(userSubmittedComboLength) : randomComboLength
     }
 
@@ -94,7 +111,8 @@ function gameSetup(){
 
     updateScoreDisplay()
 
-    randomComboArray = randomComboArrayGenerator(randomComboLength, keybinds)
+    let combinedKeybinds = keybindsCombiner(keybinds, altkeybinds)
+    randomComboArray = randomComboArrayGenerator(randomComboLength, combinedKeybinds)
 
     let i = 0;
     for(i=0; i<randomComboArray.length; i++){
@@ -102,9 +120,27 @@ function gameSetup(){
     }
 }
 
+function keybindsCombiner(theKeybinds, theAltKeybinds){
+    let combinedKeybinds = []
+    let i = 0;
+    for(i=0; i<theKeybinds.length; i ++){
+        let objectToAdd = {
+            value : theKeybinds[i],
+            combineWith: null
+        }
+        combinedKeybinds.push(objectToAdd)
+    }
+    for(i=0; i<theAltKeybinds.length; i ++){
+        let objectToAdd = {
+            value : theAltKeybinds[i],
+            combineWith: "Alt"
+        }
+        combinedKeybinds.push(objectToAdd)
+    }
+    return combinedKeybinds
+}
 function randomComboArrayGenerator(comboLength, keybinds){
     let comboArray = [];
-
     let i = 0;
 
     for(i=0; i<comboLength; i++){
@@ -125,10 +161,13 @@ function addElementToUI(element, id) {
     firstElementClass = ""
 
     id == 0 ? firstElementClass = " active" : firstElementClass = ""
-
+    let combineWithValue = element.combineWith ? element.combineWith : ""
     div.innerHTML = `
-        <div class="charactercontainer`+ firstElementClass +`">
-            <p class="character">`+ element +`</p>
+        <div class="charactercontainer`+ firstElementClass +`">`+
+            `<sub class="supersmalltext">`+ 
+            combineWithValue
+            +`</sub>` +
+            `<p class="character">`+ element.value +`</p>
         </div>
     `
     document.getElementById("loopcontainer").appendChild(div)
@@ -144,6 +183,8 @@ function gameOverMethod(){
     addScoreToLocalStorage(keybinds, randomComboLength, totalTimeTakenByUser, mistakeCounter)
     updateScoreDisplay()
     document.getElementById("theButton").value = "Play Again!"
+    document.removeEventListener("keyup", keyUpFunction)
+    document.removeEventListener("keydown", keyDownFunction)
 }
 
 function gameBeginMethod(){
