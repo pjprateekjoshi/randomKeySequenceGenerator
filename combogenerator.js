@@ -16,6 +16,7 @@ document.addEventListener("keyup", keyUpFunction)
 document.addEventListener("keydown", keyDownFunction)
 
 function keyDownFunction(e){
+    e.preventDefault()
     let userInput = e.key
     if(userInput == "Alt"){
         isAltKeyPressedByUser = true
@@ -48,6 +49,7 @@ function keyDownFunction(e){
 }
 
 function keyUpFunction(e){
+    e.preventDefault()
     if(e.key == "Alt") isAltKeyPressedByUser = false
     if(isAltKeyPressedByUser){
         showAltMiniTextOnCurrentKey()
