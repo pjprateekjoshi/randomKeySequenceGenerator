@@ -40,12 +40,15 @@
     padding: 5 0 0 10;
     background-color: lightgray;
     border-radius: 10px;
-    height: auto;
-    width: auto;
+    height: 60;
+    width: 60;
     border-style: solid;
     margin: 10 10 10 10;
     overflow: hidden;
+    position: relative;
+    left: 35%;
 }
+
 .active{
     background-color: aqua;
 }
@@ -60,6 +63,7 @@
 
 #lastKeyPressed{
     font-size: 50;
+    margin: 0 0 0 0;
 }
 
 .currentEventDisplay{
@@ -69,12 +73,25 @@
 }
 .gameState{
     height: 90%;
-    width: 30%;
+    width: 34%;
     float: left;
     background-color:rgb(88, 88, 153);
+    padding: 0 0 0 10;
+    overflow: hidden;
 }
 
-.lastKeyPressed{
+.scrollable{
+    overflow: scroll;
+    height: 90%;
+}
+
+
+::-webkit-scrollbar{
+    width: 0;
+}
+
+
+.lastKeyPressedContainer{
     height: 90%;
     width: 30%;
     float: left;
@@ -88,4 +105,37 @@
 
 .lastKeyPressedCorrect{
     background-color: rgb(4, 171, 51);
+}
+
+.row{
+    width: 100%;
+    height: 30;
+    position:relative;
+    overflow: hidden;
+}
+
+.rowElement{
+    float: left;
+    text-align: center;
+    width: 25%;
+}
+
+.heading{
+    font-size: large;
+    font-weight: bold;
+}
+
+.button{
+    padding-top: 3px;
+    margin-top: 2px;
+    font-weight: normal;
+    font-size: small;
+    text-align: center;
+    height: 20;
+    width: 60;
+    color: white;
+    background-color: rgb(120, 15, 15);
+    border-radius: 20px;
+    position: unset;
+    cursor: pointer;
 }

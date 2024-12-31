@@ -1,8 +1,24 @@
 let keybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
-
 let altkeybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
+let randomComboLength = 50
 
-randomComboLength = 10
+if(document.URL.toString().split("?").length > 1){
+    let userSubmittedKeybind = document.URL.toString().split("=")[1].split("&")[0].replaceAll("+", " ")
+    let userSubmittedComboLength = document.URL.toString().split("=")[2]
+
+    document.getElementById("customKeys").value = userSubmittedKeybind
+    document.getElementById("noOfKeystrokes").value = userSubmittedComboLength
+
+    keybinds = userSubmittedKeybind.length > 0 ? userSubmittedKeybind.split('') : keybinds
+    randomComboLength = Number(userSubmittedComboLength) > 0 ? Number(userSubmittedComboLength) : randomComboLength
+}
+
+let currentLocalStorageValue = localStorage.getItem("scoreArray")
+if(currentLocalStorageValue == null || currentLocalStorageValue == ""){
+    localStorage.setItem("scoreArray", "[]")
+}
+
+updateScoreDisplay()
 
 function randomComboArrayGenerator(comboLength, keybinds){
     let comboArray = [];
@@ -53,6 +69,7 @@ function addElement(element, id) {
 let currentIndex = 0;
 let startTime = Date.now()
 let endTime = Date.now()
+let mistakeCounter = 0
 
 function keyUpFunction(){
 
@@ -66,8 +83,8 @@ function keyUpFunction(){
             gameBeginMethod()
         }
 
-        document.getElementsByClassName("lastKeyPressed")[0].classList.remove("lastKeyPressedIncorrect")
-        document.getElementsByClassName("lastKeyPressed")[0].classList.add("lastKeyPressedCorrect")
+        document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedIncorrect")
+        document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedCorrect")
         document.getElementById("tauntText").innerHTML = "!!"
 
         removeElement(currentIndex)
@@ -81,10 +98,11 @@ function keyUpFunction(){
             gameOverMethod()
         }
     }else{
-        document.getElementsByClassName("lastKeyPressed")[0].classList.remove("lastKeyPressedCorrect")
-        document.getElementsByClassName("lastKeyPressed")[0].classList.add("lastKeyPressedIncorrect")
+        document.getElementsByClassName("lastKeyPressedContainer")[0].classList.remove("lastKeyPressedCorrect")
+        document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedIncorrect")
         document.getElementById("tauntText").innerHTML = "??"
         document.getElementById(currentIndex.toString()).children[0].classList.add("incorrect")
+        mistakeCounter ++;
     }
 
     document.getElementById("userInput").value=""
@@ -98,19 +116,54 @@ function removeElement(id) {
 
 
 function gameOverMethod(){
-    let totalTimeTakenByUser = endTime - startTime
-    console.log(totalTimeTakenByUser)
-    document.getElementById("timeTaken").innerHTML = "Total Time Taken: " + totalTimeTakenByUser
+    let totalTimeTakenByUser = (endTime - startTime)/1000
+    document.getElementById("timeTaken").innerHTML = "Total Time Taken: " + totalTimeTakenByUser + "s"
+    addScoreToLocalStorage(keybinds, randomComboLength, totalTimeTakenByUser, mistakeCounter)
+    updateScoreDisplay()
+    document.getElementById("theButton").value = "Play Again!"
 }
 
 function gameBeginMethod(){
-    document.getElementById("timeTaken").innerHTML = "The Game Has Begun"
+    document.getElementById("timeTaken").innerHTML = "The Game is ON..."
+
+
 }
 
 
+function addScoreToLocalStorage(keybindArray, practiceLength, TimeTaken, NoOfMistakes){
+    let scoreJSON = {
+        keybinds: keybindArray,
+        length: practiceLength,
+        time: TimeTaken,
+        mistakes: NoOfMistakes
+    }
+    let scoreArray = JSON.parse(localStorage.getItem('scoreArray'))
+    scoreArray.push(scoreJSON)
+    localStorage.setItem("scoreArray", JSON.stringify(scoreArray))
+}
 
 
+function updateScoreDisplay(){
+    let scoreToDisplay = JSON.parse(localStorage.getItem("scoreArray"))
+    let scoresHTML = ""
+    let i = 0
+    for(i=0; i<scoreToDisplay.length; i++){
+        scoresHTML += `
+                    <div class="row">
+                        <div class="rowElement">`+ (i+1) +`</div>
+                        <div class="rowElement">`+scoreToDisplay[i].length+`</div>
+                        <div class="rowElement">`+scoreToDisplay[i].time+`</div>
+                        <div class="rowElement">`+scoreToDisplay[i].mistakes+`</div>
+                    </div>
+                    `
+    }
+    document.getElementById("scores").innerHTML = scoresHTML
+}
 
+function clearScores(){
+    localStorage.setItem("scoreArray", "[]")
+    updateScoreDisplay()
+}
 
 
 
