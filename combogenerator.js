@@ -1,71 +1,16 @@
-let keybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
-let altkeybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
-let randomComboLength = 50
-
-if(document.URL.toString().split("?").length > 1 && document.URL.toString().split("?")[1].length > 0){
-    let userSubmittedKeybind = document.URL.toString().split("=")[1].split("&")[0].replaceAll("+", " ")
-    let userSubmittedComboLength = document.URL.toString().split("=")[2]
-
-    document.getElementById("customKeys").value = userSubmittedKeybind
-    document.getElementById("noOfKeystrokes").value = userSubmittedComboLength
-
-    keybinds = userSubmittedKeybind.length > 0 ? userSubmittedKeybind.split('') : keybinds
-    randomComboLength = Number(userSubmittedComboLength) > 0 ? Number(userSubmittedComboLength) : randomComboLength
-}
-
-let currentLocalStorageValue = localStorage.getItem("scoreArray")
-if(currentLocalStorageValue == null || currentLocalStorageValue == ""){
-    localStorage.setItem("scoreArray", "[]")
-}
-
-updateScoreDisplay()
-
-function randomComboArrayGenerator(comboLength, keybinds){
-    let comboArray = [];
-
-    let i = 0;
-
-    for(i=0; i<comboLength; i++){
-        let randomNum = Math.ceil((Math.random() * 1000))
-        let randomKeybindPosition = randomNum % (keybinds.length)
-        let nextAddElement = keybinds[randomKeybindPosition]
-        comboArray.push(nextAddElement)
-    }
-    return (comboArray)
-}
-
-let randomComboArray = randomComboArrayGenerator(randomComboLength, keybinds)
-
-let i = 0;
-
-for(i=0; i<randomComboArray.length; i++){
-    addElement(randomComboArray[i], i)
-}
-
-function addElement(element, id) {
-    const div = document.createElement('div')
-
-    div.className = 'container'
-    div.id = id.toString()
-  
-    firstElementClass = ""
-
-    id == 0 ? firstElementClass = " active" : firstElementClass = ""
-
-    div.innerHTML = `
-        <div class="charactercontainer`+ firstElementClass +`">
-            <p class="character">`+element+`</p>
-        </div>
-    `
-    document.getElementById("loopcontainer").appendChild(div)
-}
-
 //global variables
-let currentIndex = 0;
+let currentIndex = 0
 let startTime = Date.now()
 let endTime = Date.now()
 let mistakeCounter = 0
+let keybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
+let altkeybinds = ['1', '2', '3', '4', '5', 'q','w','e','r','t','a','s','d','f','g','h','z','x','c','v','b',' ']
+let randomComboLength = 50
+let randomComboArray = []
 
+gameSetup()
+
+//game function -- key listener
 function keyUpFunction(){
 
     let userInput = document.getElementById("userInput").value
@@ -83,7 +28,7 @@ function keyUpFunction(){
         document.getElementsByClassName("lastKeyPressedContainer")[0].classList.add("lastKeyPressedCorrect")
         document.getElementById("tauntText").innerHTML = "!!"
 
-        removeElement(currentIndex)
+        removeElementFromUI(currentIndex)
 
         currentIndex ++
 
@@ -106,10 +51,69 @@ function keyUpFunction(){
 }
 
 
-function removeElement(id) {
-    document.getElementById(id.toString()).remove();
+//defined methods
+function gameSetup(){
+    if(document.URL.toString().split("?").length > 1 && document.URL.toString().split("?")[1].length > 0){
+        let userSubmittedKeybind = document.URL.toString().split("=")[1].split("&")[0].replaceAll("+", " ")
+        let userSubmittedComboLength = document.URL.toString().split("=")[2]
+
+        document.getElementById("customKeys").value = userSubmittedKeybind
+        document.getElementById("noOfKeystrokes").value = userSubmittedComboLength
+
+        keybinds = userSubmittedKeybind.length > 0 ? userSubmittedKeybind.split('') : keybinds
+        randomComboLength = Number(userSubmittedComboLength) > 0 ? Number(userSubmittedComboLength) : randomComboLength
+    }
+
+    let currentLocalStorageValue = localStorage.getItem("scoreArray")
+    if(currentLocalStorageValue == null || currentLocalStorageValue == ""){
+        localStorage.setItem("scoreArray", "[]")
+    }
+
+    updateScoreDisplay()
+
+    randomComboArray = randomComboArrayGenerator(randomComboLength, keybinds)
+
+    let i = 0;
+    for(i=0; i<randomComboArray.length; i++){
+        addElementToUI(randomComboArray[i], i)
+    }
 }
 
+function randomComboArrayGenerator(comboLength, keybinds){
+    let comboArray = [];
+
+    let i = 0;
+
+    for(i=0; i<comboLength; i++){
+        let randomNum = Math.ceil((Math.random() * 1000))
+        let randomKeybindPosition = randomNum % (keybinds.length)
+        let nextAddElement = keybinds[randomKeybindPosition]
+        comboArray.push(nextAddElement)
+    }
+    return (comboArray)
+}
+
+function addElementToUI(element, id) {
+    const div = document.createElement('div')
+
+    div.className = 'container'
+    div.id = id.toString()
+  
+    firstElementClass = ""
+
+    id == 0 ? firstElementClass = " active" : firstElementClass = ""
+
+    div.innerHTML = `
+        <div class="charactercontainer`+ firstElementClass +`">
+            <p class="character">`+ element +`</p>
+        </div>
+    `
+    document.getElementById("loopcontainer").appendChild(div)
+}
+
+function removeElementFromUI(id) {
+    document.getElementById(id.toString()).remove();
+}
 
 function gameOverMethod(){
     let totalTimeTakenByUser = (endTime - startTime)/1000
@@ -125,7 +129,6 @@ function gameBeginMethod(){
 
 }
 
-
 function addScoreToLocalStorage(keybindArray, practiceLength, TimeTaken, NoOfMistakes){
     let scoreJSON = {
         keybinds: keybindArray,
@@ -137,7 +140,6 @@ function addScoreToLocalStorage(keybindArray, practiceLength, TimeTaken, NoOfMis
     scoreArray.push(scoreJSON)
     localStorage.setItem("scoreArray", JSON.stringify(scoreArray))
 }
-
 
 function updateScoreDisplay(){
     let scoreToDisplay = JSON.parse(localStorage.getItem("scoreArray"))
@@ -159,27 +161,4 @@ function updateScoreDisplay(){
 function clearScores(){
     localStorage.setItem("scoreArray", "[]")
     updateScoreDisplay()
-}
-
-
-
-
-
-///////////////////////////////////////////////this is the randomcombostring (not array)
-function randomComboStringGenerator(comboLength, keybinds){
-    let comboString = "";
-
-    let i = 0;
-
-    for(i=0; i<comboLength; i++){
-        let randomNum = Math.ceil((Math.random() * 1000))
-
-        let randomKeybindPosition = randomNum % (keybinds.length)
-        
-        let nextAddString = keybinds[randomKeybindPosition];
-
-        comboString = comboString.concat(nextAddString)
-    }
-    
-    return (comboString)
 }
