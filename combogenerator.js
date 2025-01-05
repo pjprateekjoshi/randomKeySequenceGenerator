@@ -211,9 +211,25 @@ function updateScoreDisplay(){
     let scoreToDisplay = JSON.parse(localStorage.getItem("scoreArray"))
     let scoresHTML = ""
     let i = 0
+    let leastTimeTaken = 9999999999
+    let flawlessScoring = {leastMistakesMade: -1, flawlessLeastTimeTake: 9999999999}
+    let idLeastTimeTaken = -1
+    let idFlawlessLeastTimeTaken = -1
     for(i=0; i<scoreToDisplay.length; i++){
+        if(scoreToDisplay[i].mistakes < flawlessScoring.leastMistakesMade){
+            if(scoreToDisplay[i].leastTimeTaken < flawlessScoring.flawlessLeastTimeTake){
+                flawlessScoring.leastMistakesMade = scoreToDisplay[i].mistakes
+                flawlessScoring.flawlessLeastTimeTake = scoreToDisplay[i].leastTimeTaken
+                idFlawlessLeastTimeTaken = i
+            }
+        }
+
+        if(scoreToDisplay[i].leastTimeTaken < leastTimeTaken){
+            leastTimeTaken = scoreToDisplay[i].leastTimeTaken
+            idLeastTimeTaken = i
+        }
         scoresHTML += `
-                    <div class="row">
+                    <div class="row" id="` + i + `">
                         <div class="rowElement">`+ (i+1) +`</div>
                         <div class="rowElement">`+scoreToDisplay[i].length+`</div>
                         <div class="rowElement">`+scoreToDisplay[i].time+`</div>
@@ -222,6 +238,9 @@ function updateScoreDisplay(){
                     `
     }
     document.getElementById("scores").innerHTML = scoresHTML
+    console.log(idLeastTimeTaken, idFlawlessLeastTimeTaken)
+    document.getElementById(idLeastTimeTaken.toString()) ? document.getElementById(idLeastTimeTaken).classList.add("highlighted") : null
+    document.getElementById(idFlawlessLeastTimeTaken.toString()) ? document.getElementById(idFlawlessLeastTimeTaken).classList.add("highlighted") : null
 }
 
 function clearScores(){
