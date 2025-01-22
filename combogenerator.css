@@ -149,3 +149,7 @@
     position: unset;
     cursor: pointer;
 }
+
+.highlighted{
+    background-color: palegreen;
+}
