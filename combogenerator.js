@@ -229,7 +229,7 @@ function updateScoreDisplay(){
             idLeastTimeTaken = i
         }
         scoresHTML += `
-                    <div class="row" id="` + i + `">
+                    <div class="row" id="`+ "score" + i +`">
                         <div class="rowElement">`+ (i+1) +`</div>
                         <div class="rowElement">`+scoreToDisplay[i].length+`</div>
                         <div class="rowElement">`+scoreToDisplay[i].time+`</div>
@@ -239,8 +239,9 @@ function updateScoreDisplay(){
     }
     document.getElementById("scores").innerHTML = scoresHTML
     console.log(idLeastTimeTaken, idFlawlessLeastTimeTaken)
-    document.getElementById(idLeastTimeTaken.toString()) ? document.getElementById(idLeastTimeTaken).classList.add("highlighted") : null
-    document.getElementById(idFlawlessLeastTimeTaken.toString()) ? document.getElementById(idFlawlessLeastTimeTaken).classList.add("highlighted") : null
+    document.getElementById("score" + idLeastTimeTaken.toString()) ? document.getElementById("score" + idLeastTimeTaken).classList.add("highlighted") : null
+    document.getElementById("score" + idFlawlessLeastTimeTaken.toString()) ? document.getElementById("score" + idFlawlessLeastTimeTaken).classList.add("highlighted") : null
+    document.getElementById("scores").innerHTML = scoresHTML
 }
 
 function clearScores(){
