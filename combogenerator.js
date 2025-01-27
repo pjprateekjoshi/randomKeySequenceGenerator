@@ -212,20 +212,25 @@ function updateScoreDisplay(){
     let scoresHTML = ""
     let i = 0
     let leastTimeTaken = 9999999999
-    let flawlessScoring = {leastMistakesMade: -1, flawlessLeastTimeTake: 9999999999}
+    let flawlessScoring = {leastMistakesMade: 999999999, flawlessLeastTimeTake: 9999999999}
     let idLeastTimeTaken = -1
     let idFlawlessLeastTimeTaken = -1
     for(i=0; i<scoreToDisplay.length; i++){
         if(scoreToDisplay[i].mistakes < flawlessScoring.leastMistakesMade){
-            if(scoreToDisplay[i].leastTimeTaken < flawlessScoring.flawlessLeastTimeTake){
                 flawlessScoring.leastMistakesMade = scoreToDisplay[i].mistakes
-                flawlessScoring.flawlessLeastTimeTake = scoreToDisplay[i].leastTimeTaken
+                flawlessScoring.flawlessLeastTimeTake = scoreToDisplay[i].time
+                idFlawlessLeastTimeTaken = i
+        }else if(scoreToDisplay[i].mistakes == flawlessScoring.leastMistakesMade){
+            if(scoreToDisplay[i].time < flawlessScoring.flawlessLeastTimeTake){ 
+                flawlessScoring.flawlessLeastTimeTake = scoreToDisplay[i].time
                 idFlawlessLeastTimeTaken = i
             }
         }
 
-        if(scoreToDisplay[i].leastTimeTaken < leastTimeTaken){
-            leastTimeTaken = scoreToDisplay[i].leastTimeTaken
+        console.log(scoreToDisplay[i].time + " < " + leastTimeTaken)
+        if(scoreToDisplay[i].time < leastTimeTaken){
+            console.log(i + " this one" + scoreToDisplay[i].time)
+            leastTimeTaken = scoreToDisplay[i].time
             idLeastTimeTaken = i
         }
         scoresHTML += `
@@ -238,10 +243,8 @@ function updateScoreDisplay(){
                     `
     }
     document.getElementById("scores").innerHTML = scoresHTML
-    console.log(idLeastTimeTaken, idFlawlessLeastTimeTaken)
-    document.getElementById("score" + idLeastTimeTaken.toString()) ? document.getElementById("score" + idLeastTimeTaken).classList.add("highlighted") : null
-    document.getElementById("score" + idFlawlessLeastTimeTaken.toString()) ? document.getElementById("score" + idFlawlessLeastTimeTaken).classList.add("highlighted") : null
-    document.getElementById("scores").innerHTML = scoresHTML
+    document.getElementById("score" + idLeastTimeTaken.toString()) ? document.getElementById("score" + idLeastTimeTaken.toString()).classList.add("highlighted") : null
+    document.getElementById("score" + idFlawlessLeastTimeTaken.toString()) ? document.getElementById("score" + idFlawlessLeastTimeTaken.toString()).classList.add("highlighted") : null
 }
 
 function clearScores(){
